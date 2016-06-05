@@ -1,0 +1,22 @@
+def g_v(path)
+  File.read(path).match(/\.version\s*=\s*['"](?<ver>[\d\.]+)['"]/)[:ver]
+end
+
+target :all do
+  system "gem build lake-cpp.gemspec"
+end
+
+target :install, :all do
+  system "gem install ./lake-cpp-#{g_v "lake-cpp.gemspec"}.gem"
+end
+
+target :test do
+  use :cpp
+  CCompiler.new.compile("./test.c","test")
+  system "chmod +x ./test"
+  system "./test"
+
+  CCompiler.new(compiler: "g++").compile("./test.cpp","test_cpp")
+  system "chmod +x ./test_cpp"
+  system "./test_cpp"
+end
