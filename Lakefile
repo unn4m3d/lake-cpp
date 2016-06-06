@@ -20,3 +20,11 @@ target :test do
   system "chmod +x ./test_cpp"
   system "./test_cpp"
 end
+
+target :linker_test do
+  use :cpp
+  CCompiler.new(flags: "-c").compile("./ltest.c","ltest.o")
+  CCompiler.new(flags: "-fPIC").link("ltest.o","ltest")
+  system "chmod +x ./ltest"
+  system "./ltest"
+end
